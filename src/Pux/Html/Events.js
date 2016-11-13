@@ -23,3 +23,30 @@ exports.onKeyHandler = function (keyName, action) {
     };
   }];
 };
+
+exports.touchHandler = function(key, action) {
+  return [key, function(input, parentAction) {
+    return function (ev) {
+      function mkArray(tl) {
+          var acc = [];
+          for (var i = 0; i < tl.length; i++) {
+              acc.push(tl.item(i));
+          }
+          return acc;
+      }
+      var puxEv = {
+          target: ev.target,
+          currentTarget: ev.currentTarget,
+          altKey: ev.altKey,
+          ctrlKey: ev.ctrlKey,
+          metaKey: ev.metaKey,
+          shiftKey: ev.shiftKey,
+          touches: mkArray(ev.touches),
+          changedTouches: mkArray(ev.changedTouches),
+          targetTouches: mkArray(ev.targetTouches),
+          preventDefault: function() {ev.preventDefault();}
+      }
+      input(parentAction(action(puxEv)))();
+    };
+  }];
+};

@@ -65,6 +65,17 @@ type SelectionEvent =
   , currentTarget :: Target
 }
 
+type Touch =
+  { identifier :: String
+  , clientX :: Number
+  , clientY :: Number
+  , pageX :: Number
+  , pageY :: Number
+  , screenX :: Number
+  , screenY :: Number
+  , target :: Target
+  }
+
 type TouchEvent =
   { target :: Target
   , currentTarget :: Target
@@ -72,6 +83,9 @@ type TouchEvent =
   , ctrlKey :: Boolean
   , metaKey :: Boolean
   , shiftKey :: Boolean
+  , touches :: Array Touch
+  , changedTouches :: Array Touch
+  , targetTouches :: Array Touch
   }
 
 type UIEvent =
@@ -198,16 +212,16 @@ onSelect :: forall action. (SelectionEvent -> action) -> Attribute action
 onSelect = runFn2 handler "onSelect"
 
 onTouchCancel :: forall action. (TouchEvent -> action) -> Attribute action
-onTouchCancel = runFn2 handler "onTouchCancel"
+onTouchCancel = runFn2 touchHandler "onTouchCancel"
 
 onTouchEnd :: forall action. (TouchEvent -> action) -> Attribute action
-onTouchEnd = runFn2 handler "onTouchEnd"
+onTouchEnd = runFn2 touchHandler "onTouchEnd"
 
 onTouchMove :: forall action. (TouchEvent -> action) -> Attribute action
-onTouchMove = runFn2 handler "onTouchMove"
+onTouchMove = runFn2 touchHandler "onTouchMove"
 
 onTouchStart :: forall action. (TouchEvent -> action) -> Attribute action
-onTouchStart = runFn2 handler "onTouchStart"
+onTouchStart = runFn2 touchHandler "onTouchStart"
 
 onScroll :: forall action. (UIEvent -> action) -> Attribute action
 onScroll = runFn2 handler "onScroll"
@@ -288,5 +302,7 @@ onWaiting :: forall action. (MediaEvent -> action) -> Attribute action
 onWaiting = runFn2 handler "onWaiting"
 
 foreign import handler :: forall ev a. Fn2 String (ev -> a) (Attribute a)
+
+foreign import touchHandler :: forall ev a. Fn2 String (ev -> a) (Attribute a)
 
 foreign import onKeyHandler :: forall ev a. Fn2 String (ev -> a) (Attribute a)
